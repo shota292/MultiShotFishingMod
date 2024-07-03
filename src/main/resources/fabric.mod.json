@@ -1,0 +1,44 @@
+{
+	"schemaVersion": 1,
+	"id": "multishotfishing",
+	"version": "${version}",
+	"name": "MultiShotFishing",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Me!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/multishotfishing/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"leta.multishotfishing.MultiShotFishing"
+		],
+		"client": [
+			"leta.multishotfishing.MultiShotFishingClient"
+		],
+		"fabric-datagen": [
+			"leta.multishotfishing.MultiShotFishingDataGenerator"
+		]
+	},
+	"mixins": [
+		"multishotfishing.mixins.json",
+		{
+			"config": "multishotfishing.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.21",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
