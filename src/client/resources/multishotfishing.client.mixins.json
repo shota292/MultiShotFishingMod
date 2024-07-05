@@ -3,7 +3,8 @@
 	"package": "leta.multishotfishing.mixin.client",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"ExampleClientMixin"
+		"ExampleClientMixin",
+		"ModelPredicateProviderRegistryMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
