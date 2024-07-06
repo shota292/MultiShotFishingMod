@@ -10,11 +10,12 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(ModelPredicateProviderRegistry.class)
 public class ModelPredicateProviderRegistryMixin {
-    @ModifyArg(method = "<clinit>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/item/ModelPredicateProviderRegistry;register(Lnet/minecraft/item/Item;Lnet/minecraft/util/Identifier;Lnet/minecraft/client/item/ClampedModelPredicateProvider;)V", by = 12), index = 2)
+    @ModifyArg(method = "<clinit>", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/item/ModelPredicateProviderRegistry;register(Lnet/minecraft/item/Item;Lnet/minecraft/util/Identifier;Lnet/minecraft/client/item/ClampedModelPredicateProvider;)V", ordinal = 12), index = 2)
     private static ClampedModelPredicateProvider hogehoge(ClampedModelPredicateProvider provider) {
+
         return (stack, world, entity, seed) -> {
             if (entity == null) {
-                return 1.0F;
+                return 0.0F;
             } else {
                 boolean bl = entity.getMainHandStack() == stack;
                 boolean bl2 = entity.getOffHandStack() == stack;
@@ -22,7 +23,7 @@ public class ModelPredicateProviderRegistryMixin {
                     bl2 = false;
                 }
 
-                return (bl || bl2) && entity instanceof PlayerEntity && ((PlayerEntity)entity).fishHook != null ? 0.0F : 1.0F;
+                return (bl || bl2) && entity instanceof PlayerEntity && ((PlayerEntity)entity).fishHook != null ? 1.0F : 0.0F;
             }
         };
     }
