@@ -5,6 +5,7 @@
   "mixins": [
     "ExampleMixin",
     "FishingBobberEntityMixin",
+    "FishingRodItemMixin",
     "PlayerEntityMixin"
   ],
   "injectors": {

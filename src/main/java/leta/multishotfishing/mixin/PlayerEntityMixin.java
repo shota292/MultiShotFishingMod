@@ -8,6 +8,5 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(PlayerEntity.class)
 public class PlayerEntityMixin implements FishHooksField {
-//    @Override@Unique
-//    public FishingBobberEntity fishBobbers;
+    // fishHooksを使用するためのフィールドを定義
 }
