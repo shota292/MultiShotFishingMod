@@ -17,7 +17,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public class FishingBobberEntityMixin {
     @Shadow @Final private static Logger LOGGER;
 
-    @Inject(method = "setPlayerFishHook(Lnet/minecraft/entity/projectile/FishingBobberEntity;)V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;fishHook:Lnet/minecraft/entity/projectile/FishingBobberEntity;"), locals = LocalCapture.CAPTURE_FAILHARD)
+
+    @Inject(method = "setPlayerFishHook(Lnet/minecraft/entity/projectile/FishingBobberEntity;)V", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;fishHook:Lnet/minecraft/entity/projectile/FishingBobberEntity;", shift = At.Shift.BEFORE), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void setPlayerFishHook(FishingBobberEntity fishHook, CallbackInfo ci, PlayerEntity playerEntity) {
         if (!((Entity)(Object)this).getWorld().isClient) {
             if (fishHook != null) {
@@ -30,6 +31,7 @@ public class FishingBobberEntityMixin {
                 LOGGER.info("setPlayerFishHook: "+((FishHooksField) playerEntity).fishHooks);
             }
         }
+        ci.cancel();
 //        LOGGER.info("setPlayerFishHook: "+(fishHook!=null?fishHook.getUuidAsString():"null"));
     }
 }
