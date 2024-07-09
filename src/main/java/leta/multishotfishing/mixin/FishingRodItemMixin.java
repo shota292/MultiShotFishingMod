@@ -1,6 +1,5 @@
 package leta.multishotfishing.mixin;
 
-import com.llamalad7.mixinextras.sugar.Local;
 import leta.multishotfishing.entity.FishHooksField;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
@@ -20,13 +19,12 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.ArrayList;
 
-import static leta.multishotfishing.MultiShotFishing.LOGGER;
 
 @Mixin(FishingRodItem.class)
 public class FishingRodItemMixin {
     @Redirect(method = "use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/TypedActionResult;", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/player/PlayerEntity;fishHook:Lnet/minecraft/entity/projectile/FishingBobberEntity;", opcode = Opcodes.GETFIELD, ordinal = 0))
     private FishingBobberEntity getFishHook(PlayerEntity playerEntity) {
-        return !((FishHooksField) playerEntity).fishHooks.isEmpty() ? ((FishHooksField)playerEntity).fishHooks.getFirst():(FishingBobberEntity)null;
+        return !((FishHooksField) playerEntity).fishHooks.isEmpty() ? ((FishHooksField)playerEntity).fishHooks.getFirst():null;
     }
 
     @Redirect(method = "use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/TypedActionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/FishingBobberEntity;use(Lnet/minecraft/item/ItemStack;)I", ordinal = 0))
