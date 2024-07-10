@@ -1,5 +1,6 @@
 package leta.multishotfishing.mixin.client;
 
+import leta.multishotfishing.entity.FishHooksField;
 import net.minecraft.client.item.ClampedModelPredicateProvider;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,7 +24,7 @@ public class ModelPredicateProviderRegistryMixin {
                     bl2 = false;
                 }
 
-                return (bl || bl2) && entity instanceof PlayerEntity && ((PlayerEntity)entity).fishHook != null ? 1.0F : 0.0F;
+                return (bl || bl2) && entity instanceof PlayerEntity && !((FishHooksField) entity).fishHooks.isEmpty() ? 1.0F : 0.0F;
             }
         };
     }

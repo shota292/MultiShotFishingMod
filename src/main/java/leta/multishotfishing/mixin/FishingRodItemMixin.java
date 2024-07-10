@@ -13,6 +13,7 @@ import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -27,26 +28,31 @@ public class FishingRodItemMixin {
         return !((FishHooksField) playerEntity).fishHooks.isEmpty() ? ((FishHooksField)playerEntity).fishHooks.getFirst():null;
     }
 
+    @ModifyVariable(method = "use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/TypedActionResult;",at = @At("STORE"),ordinal = 0)
+    private int useFishHook(int i, World world, PlayerEntity user, Hand hand) {
+        ((FishHooksField)user).multiShotFishingMod$setHooked(((FishHooksField)user).fishHooks.stream().anyMatch(fishHook -> ((FishingBobberEntityAccessor)fishHook).getHookCountdown() > 0));
+
+        while (!((FishHooksField)user).fishHooks.isEmpty()) {
+            i+=((FishHooksField)user).fishHooks.getFirst().use(user.getStackInHand(hand));
+        }
+        ((FishHooksField)user).multiShotFishingMod$setHooked(false);
+        return i;
+    }
+
     @Redirect(method = "use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/TypedActionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/FishingBobberEntity;use(Lnet/minecraft/item/ItemStack;)I", ordinal = 0))
     private int useFishHook(FishingBobberEntity fishingBobberEntity, ItemStack itemStack) {
-//        return (fishingBobberEntity != null) ? fishingBobberEntity.use(itemStack) : 0;
         return 0;
     }
-    @Inject(method = "use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/TypedActionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/projectile/FishingBobberEntity;use(Lnet/minecraft/item/ItemStack;)I", ordinal = 0, shift = At.Shift.AFTER))
-    private void useFishHooks(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir) {
-//        i = ((FishHooksField)user).fishHooks.stream().mapToInt(fishHook -> fishHook.use(user.getStackInHand(hand))).sum();
-//        LOGGER.info("useFishHooks: "+((FishHooksField)user).fishHooks);
-        ArrayList<FishingBobberEntity> FishiHooks = ((FishHooksField) user).fishHooks;
-        int size = FishiHooks.size();
-        // logに出力
-//        LOGGER.info("useFishHooks: "+size);
-        for (int j = 0; j < size; j++) {
-            FishiHooks.getFirst().use(user.getStackInHand(hand));
-//            LOGGER.info("useFishHooks: "+size);
-        }
-    }
+
     @Inject(method = "use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/TypedActionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z", shift = At.Shift.AFTER),locals = LocalCapture.CAPTURE_FAILHARD)
     private void spawnFishHooks(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir, ItemStack itemStack, ServerWorld serverWorld, int j, int k) {
-        world.spawnEntity(new FishingBobberEntity(user, world, k, j));
+        float playerYaw = user.getYaw();
+        for (int i=0;i<2;i++) {
+            user.setYaw(playerYaw + (i+1)*5);
+            world.spawnEntity(new FishingBobberEntity(user, world, k, j));
+            user.setYaw(playerYaw - (i+1)*5);
+            world.spawnEntity(new FishingBobberEntity(user, world, k, j));
+        }
+        user.setYaw(playerYaw);
     }
 }

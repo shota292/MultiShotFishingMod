@@ -8,5 +8,15 @@ import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(PlayerEntity.class)
 public class PlayerEntityMixin implements FishHooksField {
-    // fishHooksを使用するためのフィールドを定義
+    @Unique
+    private boolean hooked = false;
+
+    @Override
+    public boolean multiShotFishingMod$getHooked() {
+        return hooked;
+    }
+    @Override
+    public void multiShotFishingMod$setHooked(boolean hooked) {
+        this.hooked = hooked;
+    }
 }
