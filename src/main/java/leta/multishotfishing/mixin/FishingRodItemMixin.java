@@ -1,6 +1,7 @@
 package leta.multishotfishing.mixin;
 
 import leta.multishotfishing.entity.FishHooksField;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.FishingRodItem;
@@ -47,7 +48,8 @@ public class FishingRodItemMixin {
     @Inject(method = "use(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/TypedActionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z", shift = At.Shift.AFTER),locals = LocalCapture.CAPTURE_FAILHARD)
     private void spawnFishHooks(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> cir, ItemStack itemStack, ServerWorld serverWorld, int j, int k) {
         float playerYaw = user.getYaw();
-        for (int i=0;i<2;i++) {
+        int h = EnchantmentHelper.getProjectileCount(serverWorld, itemStack, user, 0)/2;
+        for (int i=0;i<h;i++) {
             user.setYaw(playerYaw + (i+1)*5);
             world.spawnEntity(new FishingBobberEntity(user, world, k, j));
             user.setYaw(playerYaw - (i+1)*5);
