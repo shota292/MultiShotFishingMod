@@ -3,7 +3,6 @@
   "package": "leta.multishotfishing.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "ExampleMixin",
     "FishingBobberEntityAccessor",
     "FishingBobberEntityMixin",
     "FishingRodItemMixin",
